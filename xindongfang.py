@@ -1,32 +1,25 @@
 import requests
 from bs4 import BeautifulSoup
-import re
-import json
-
-def load_pic(url):
-    response = requests.get(url)
-    return response.content
-
-# res = requests.get('http://www.nipic.com/topic/show_27202_1.html')
 
 cookiess = {
-    "JSESSIONID": "A29CDB2595A07B0F04BACA5265D5730A",
+    "JSESSIONID": "1500956D798AEE42A8DC25F5CA0C28ED",
     "pageNo": "3",
     "pageSize": "10"
 }
-ssrequest = requests.session()
-# requests.utils.add_dict_to_cookiejar(ssrequest.cookies, cookiess)
-url = "http://bpm.xdf.cn/studyservice/todo/list?subject=教师4＋1质检&orderByStr=expect_end_time%20desc&=2"
 payload = {'pageNo': 2}
+continueStr = '21日'
+
+url = "http://bpm.xdf.cn/studyservice/todo/list?subject=教师4＋1质检&orderByStr=expect_end_time%20desc&=2"
 req = requests.get( url, cookies=cookiess, params=payload)
 cookies = requests.cookies.RequestsCookieJar()
 cookies.update(req.cookies)
 soup = BeautifulSoup(req.text)
 print(soup.find_all(class_="saucy"))
-# print(soup.find_all(string='下一页'))
 stus = soup.find_all(class_='Work_list1')
 for stu in stus:
     startBtn = stu.find(class_='startBtn')
+    if startBtn.string.find(continueStr)>0:
+        continue
     print(startBtn.string)
     classInfo = stu.find(href="javascript:void(0);")
     str = classInfo['onclick'].replace('\'', '').split(',')
@@ -40,8 +33,21 @@ for stu in stus:
     classDetail = requests.get('http://bpm.xdf.cn/studyservice/todo/toItemPage', params=classParam, cookies=cookiess)
     classDetailSoup = BeautifulSoup(classDetail.text, "html.parser")
     tokenDiv = classDetailSoup.find(type="hidden")
-    print(tokenDiv)
-    print(tokenDiv.attrs['value'])
+    classParam.pop('serviceType')
+    classParam.setdefault('token', tokenDiv.attrs['value'])
+    classParam.setdefault('lesson_type', '1')
+    classParam.setdefault('homework_setting', '1')
+    classParam.setdefault('inclass_test', '1')
+    classParam.setdefault('homework_feedback', '1')
+    classParam.setdefault('inclass_feedback', '1')
+    classParam.setdefault('group_interaction', '1')
+    classParam.setdefault('remark', '')
+    finish = requests.get('http://bpm.xdf.cn/workflow/wechatFeedBackNew/finishWechatFeedBackNew', params=classParam, cookies=cookiess)
+    print(finish)
+    print(classParam)
+    print("finish")
+    # print(classParam)
+
 
     # print(classCode)
 
