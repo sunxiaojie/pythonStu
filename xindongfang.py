@@ -21,35 +21,35 @@ def classinfo(page):
         date_str = re.split(r'[年|月|日]', stu.find(class_='startBtn').string)
         class_date = '{year}-{month}-{day}'.format(year=date_str[0], month=date_str[1], day=date_str[2])
         now_date = time.strftime("%Y-%m-%d", time.localtime(int(time.time())))
-        if class_date >= now_date:
-            print('{class_date}课程Pass!!!!!!!!!!!!!!!'.format(class_date=class_date))
-            continue
-        print('{class_date}课程开始处理......'.format(class_date=class_date))
-        classInfo = stu.find(href="javascript:void(0);")
-        str = classInfo['onclick'].replace('\'', '').split(',')
-        serviceType = str[0].replace('dealwith(', '')
-        workObjectNumber = str[1]
-        workflowNumber = str[2]
-        stuCode = str[3]
-        classCode = str[4]
-        classParam = {'serviceType': serviceType, 'workObjectNumber': workObjectNumber,
-                      'workflowNumber': workflowNumber, 'stuCode': stuCode, 'classCode': classCode}
-        print(classParam)
-        classDetail = requests.get('http://bpm.xdf.cn/studyservice/todo/toItemPage', params=classParam, cookies=COOKIES)
-        classDetailSoup = BeautifulSoup(classDetail.text, "html.parser")
-        tokenDiv = classDetailSoup.find(type="hidden")
-        classParam.pop('serviceType')
-        classParam.setdefault('token', tokenDiv.attrs['value'])
-        classParam.setdefault('lesson_type', '1')
-        classParam.setdefault('homework_setting', '1')
-        classParam.setdefault('inclass_test', '1')
-        classParam.setdefault('homework_feedback', '1')
-        classParam.setdefault('inclass_feedback', '1')
-        classParam.setdefault('group_interaction', '1')
-        classParam.setdefault('remark', '')
-        finish = requests.get('http://bpm.xdf.cn/workflow/wechatFeedBackNew/finishWechatFeedBackNew', params=classParam, cookies=COOKIES)
-        print(finish)
-        print(classParam)
+        # if class_date >= now_date:
+        #     print('{class_date}课程Pass!!!!!!!!!!!!!!!'.format(class_date=class_date))
+        #     continue
+        # print('{class_date}课程开始处理......'.format(class_date=class_date))
+        # classInfo = stu.find(href="javascript:void(0);")
+        # str = classInfo['onclick'].replace('\'', '').split(',')
+        # serviceType = str[0].replace('dealwith(', '')
+        # workObjectNumber = str[1]
+        # workflowNumber = str[2]
+        # stuCode = str[3]
+        # classCode = str[4]
+        # classParam = {'serviceType': serviceType, 'workObjectNumber': workObjectNumber,
+        #               'workflowNumber': workflowNumber, 'stuCode': stuCode, 'classCode': classCode}
+        # print(classParam)
+        # classDetail = requests.get('http://bpm.xdf.cn/studyservice/todo/toItemPage', params=classParam, cookies=COOKIES)
+        # classDetailSoup = BeautifulSoup(classDetail.text, "html.parser")
+        # tokenDiv = classDetailSoup.find(type="hidden")
+        # classParam.pop('serviceType')
+        # classParam.setdefault('token', tokenDiv.attrs['value'])
+        # classParam.setdefault('lesson_type', '1')
+        # classParam.setdefault('homework_setting', '1')
+        # classParam.setdefault('inclass_test', '1')
+        # classParam.setdefault('homework_feedback', '1')
+        # classParam.setdefault('inclass_feedback', '1')
+        # classParam.setdefault('group_interaction', '1')
+        # classParam.setdefault('remark', '')
+        # finish = requests.get('http://bpm.xdf.cn/workflow/wechatFeedBackNew/finishWechatFeedBackNew', params=classParam, cookies=COOKIES)
+        # print(finish)
+        # print(classParam)
         print("finish")
 
 
